@@ -1,6 +1,6 @@
 import json
 
-with open("mit_wordlist_10000.txt", "r", encoding="utf8") as s:
+with open("gewl.txt", "r", encoding="utf8") as s:
     content = s.read()
 
 words = content.split("\n")[:-1]
