@@ -95,5 +95,5 @@ function fetchJSON(url, updateFunction) {
 
 let allWords;
 let wordsByFreq;
-fetchJSON("num_words.json", (data) => {allWords = data});
+fetchJSON("num_words_superior.json", (data) => {allWords = data});
 // fetchJSON("words_by_freq.json", (data) => {wordsByFreq = data});
