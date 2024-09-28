@@ -24,11 +24,31 @@ phoneInputTest.textContent = "Input Test";
 
 phoneInputTest.focus();
 
+function popByVal(list, value) {
+  var index = list.indexOf(value);
+  if (index !== -1) {
+    list.splice(index, 1);
+  }
+  return list;
+}
+
+function sortedWords(wordArray) {
+  const wordsInFreqList = [];
+  wordsByFreq.forEach(word => {
+    if (wordArray.includes(word)) {
+      wordsInFreqList.push(word);
+      popByVal(wordArray, word)
+    }
+  });
+  return wordsInFreqList.concat(wordArray)
+}
+
 function lookupWord(numString) {
   console.log(numString)
   const wordArray = allWords[numString];
   console.log("wordArray: ", wordArray);
   if (wordArray) {
+    // wordTest.textContent = sortedWords(wordArray).join(", ")
     wordTest.textContent = wordArray.join(", ")
   }
 }
@@ -46,14 +66,27 @@ phoneInputTest.addEventListener("input", (event) => {
 //   wordTest.textContent = data.join(", ");
 // }
 
-function fetchWords() {
-  fetch("num_words.json")
+// function fetchWords() {
+//   fetch("num_words.json")
+//     .then(function (promise) {
+//       return promise.json();  // Convert the response to JSON
+//     })
+//     .then(function (data) {
+//       allWords = data;  // Assign data to `allWords`
+//       wordTest.textContent = String(data['97683']);  // Update the content of `wordTest`
+//     })
+//     .catch(function (error) {
+//       console.error('Error:', error);  // Handle any errors that occur
+//     });
+// }
+
+function fetchJSON(url, updateFunction) {
+  fetch(url)
     .then(function (promise) {
       return promise.json();  // Convert the response to JSON
     })
     .then(function (data) {
-      allWords = data;  // Assign data to `allWords`
-      wordTest.textContent = String(data['97683']);  // Update the content of `wordTest`
+      updateFunction(data);
     })
     .catch(function (error) {
       console.error('Error:', error);  // Handle any errors that occur
@@ -61,4 +94,6 @@ function fetchWords() {
 }
 
 let allWords;
-fetchWords();
+let wordsByFreq;
+fetchJSON("num_words.json", (data) => {allWords = data});
+// fetchJSON("words_by_freq.json", (data) => {wordsByFreq = data});
