@@ -6,6 +6,22 @@ inputTest = document.createElement("h1");
 document.body.append(inputTest);
 inputTest.textContent = "Input Test";
 
+// document.addEventListener("keydown", (event) => {
+//   console.log("event.key: ", event.key);
+//   inputTest.textContent = event.key
+// });
+
+phoneInputTest = document.createElement("input");
+document.body.append(phoneInputTest);
+phoneInputTest.textContent = "Input Test";
+
+phoneInputTest.focus();
+
+phoneInputTest.addEventListener("input", (event) => {
+  inputTest.textContent = phoneInputTest.value;
+  phoneInputTest.value = "";
+});
+
 // async function fetchWords() {
 //   let promise = await fetch("words.json");
 //   let data = await promise.json();
@@ -29,8 +45,3 @@ function fetchWords() {
 
 let allWords = [];
 fetchWords();
-
-document.addEventListener("keydown", (event) => {
-  console.log("event.key: ", event.key);
-  inputTest.textContent = event.key
-});
