@@ -2,14 +2,21 @@ wordTest = document.createElement("textarea");
 document.body.append(wordTest);
 wordTest.textContent = "himom";
 
+keyTest = document.createElement("h1");
+document.body.append(keyTest);
+keyTest.textContent = "Key Test";
+
 inputTest = document.createElement("h1");
 document.body.append(inputTest);
-inputTest.textContent = "Input Test";
+inputTest.textContent = "_";
 
-// document.addEventListener("keydown", (event) => {
-//   console.log("event.key: ", event.key);
-//   inputTest.textContent = event.key
-// });
+document.addEventListener("keydown", (event) => {
+  console.log("event.key: ", event.key);
+  keyTest.textContent = event.key;
+  if (event.key === "ArrowUp") {
+    inputTest.textContent = "_";
+  }
+});
 
 phoneInputTest = document.createElement("input");
 document.body.append(phoneInputTest);
@@ -18,7 +25,7 @@ phoneInputTest.textContent = "Input Test";
 phoneInputTest.focus();
 
 phoneInputTest.addEventListener("input", (event) => {
-  inputTest.textContent = phoneInputTest.value;
+  inputTest.textContent += phoneInputTest.value;
   phoneInputTest.value = "";
 });
 
