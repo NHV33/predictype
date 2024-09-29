@@ -1,3 +1,34 @@
 body {
   background-color: cadetblue;
 }
+
+.word-choice-box {
+  font-size: 12px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: start;
+  align-items: center;
+  background-color: none;
+  width: 90vw;
+  height: 3em !important;
+  overflow-x: scroll;
+}
+
+.word-choice-box > div {
+  font-size: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: aliceblue;
+  padding-block: 0.33em;
+  padding-inline: 0.77em;
+  margin-inline: 2px;
+}
+
+textarea {
+  min-height: 7em;
+}
+
+.selected-choice {
+  background-color: pink !important;
+}
