@@ -3,7 +3,7 @@ body {
 }
 
 .word-choice-box {
-  font-size: 12px;
+  font-size: 14px;
   display: flex;
   flex-wrap: nowrap;
   justify-content: start;
@@ -20,9 +20,9 @@ body {
   justify-content: center;
   align-items: center;
   background-color: aliceblue;
-  padding-block: 0.33em;
-  padding-inline: 0.77em;
-  margin-inline: 2px;
+  padding: 0.33em 0.77em 0.33em 0.77em;
+  /* padding-inline: 0.77em; */
+  margin: 2px;
 }
 
 textarea {
