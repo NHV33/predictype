@@ -233,3 +233,21 @@ function toggleVisibleById(elementId) {
     element.style.visibility = "hidden";
   }
 }
+
+
+function copyToClipboard() {
+  inputField.select();
+  try {
+    document.execCommand('copy');
+    keyTest.textContent = 'Copied text!';
+  } catch (err) {
+    keyTest.textContent = 'Unable to copy text';
+    console.error('Unable to copy text', err);
+  }
+}
+
+const copyButton = newElement("button");
+copyButton.textContent = "Copy to Clipboard";
+copyButton.addEventListener("click", () => {
+  copyToClipboard();
+});
