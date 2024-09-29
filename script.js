@@ -12,17 +12,13 @@ function newElement(tag, attrs, parent) {
 let choiceIndex = 0;
 let selectedWord = "";
 
-keyTest = document.createElement("h4");
-document.body.append(keyTest);
-keyTest.textContent = "Key Test";
-
 const textareaBox = newElement("div");
 
 const inputField = newElement("textarea", {style: "min-width: 90vw; margin-bottom: 15px;"}, textareaBox);
 // document.body.append(inputField);
 // inputField.textContent = "_";
 
-const preventDefKeys = ["F1"];
+const preventDefKeys = ["F1", "F2", "F4"];
 
 document.addEventListener("keydown", (event) => {
   console.log("event.key: ", event.key);
@@ -35,9 +31,12 @@ document.addEventListener("keydown", (event) => {
 function handleKeyPress(key) {
   keyTest.textContent = key;
   switch (key) {
-    case "F1":
+    case "F4":
       clearInput();
       toggleVisibleById("dialpad");
+      break;
+    case "F2":
+      copyToClipboard();
       break;
     case "ArrowUp":
       selectChoice("prev");
@@ -148,18 +147,65 @@ inputInterceptor.addEventListener("input", (event) => {
 let inputBuffer = "";
 
 function handleInput(inputChar) {
-  if (inputChar === " ") {
-    keyTest.textContent = "space detected";
-    confirmWord(selectedWord);
-  } else {
+  if ("23456789".includes(inputChar)) {
     inputBuffer += inputChar;
     lookupWord(inputBuffer);
+  } else if (inputChar === " ") {
+    confirmWord(selectedWord);
+  } else if (inputChar === "*") {
+    modifyPrevWord(toggleCase);
+  } else if (inputChar === "1") {
+    performBackspace();
+  } else if (inputChar === "#") {
+    showPunctuationOptions();
   }
 }
 
+function showPunctuationOptions() {
+  const punctuationAndSymbols = [
+    ".", "?", "!", ",", ";", ":", "'", "\"", "/", "\\", "&", "@", "#", "$", "%", "^", "*",
+    "(", ")", "[", "]", "{", "}"
+  ];
+  populateChoiceBox(punctuationAndSymbols);
+}
+
+function performBackspace() {
+  prevWord = null;
+  inputField.value = inputField.value.slice(0, inputField.value.length - 1);
+}
+
+function modifyPrevWord(modify) {
+  if (!prevWord) { return }
+  inputField.value = inputField.value.slice(0, insertionIndex)
+  const updatedWord = modify(prevWord);
+  inputField.value += updatedWord;
+  prevWord = updatedWord;
+}
+
+function toggleCase(text) {
+  // TODO: add quote / parenthesis wrapping?
+  const firstLetter = text.slice(0, 1);
+  const allCAPS = (text.toUpperCase() === text);
+  const capitalized = (!allCAPS && firstLetter.toUpperCase() === firstLetter)
+  if (capitalized && !allCAPS) {
+    return text.toUpperCase()
+  } else if (allCAPS) {
+    return text.toLowerCase()
+  } else {
+    return firstLetter.toUpperCase() + text.slice(1)
+  }
+}
+
+let insertionIndex = 0;
+let prevWord = "";
+
 function confirmWord(word) {
-  if (!wordChoiceBox.hasChildNodes) { return }
-  inputField.value += ` ${word}`;
+  prevWord = word;
+  // TODO: make prefix rules into a function
+  const prefix = word.length > 1 && inputField.value.length > 1 ? " " : "";
+  inputField.value += prefix;
+  insertionIndex = inputField.value.length;
+  inputField.value += word;
   clearInput();
 }
 
@@ -251,3 +297,7 @@ copyButton.textContent = "Copy to Clipboard";
 copyButton.addEventListener("click", () => {
   copyToClipboard();
 });
+
+keyTest = document.createElement("h4");
+document.body.append(keyTest);
+keyTest.textContent = "Key Test";
