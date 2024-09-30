@@ -34,6 +34,7 @@ function handleKeyPress(key) {
     case "F4":
       clearInput();
       toggleVisibleById("dialpad");
+      toggleVisibleById("key-test");
       break;
     case "F2":
       copyToClipboard();
@@ -51,11 +52,22 @@ function handleKeyPress(key) {
 
 const wordChoiceBox = newElement("div", {id:"word-choice-box", class:"word-choice-box"})
 
-inputInterceptor = document.createElement("input");
-document.body.append(inputInterceptor);
-inputInterceptor.textContent = "Input Test";
+const copyButton = newElement("button");
+copyButton.textContent = "Copy";
+copyButton.addEventListener("click", () => {
+  copyToClipboard();
+});
 
+const inputInterceptor = newElement("input", {style: "max-width: 33px"});
 inputInterceptor.focus();
+
+const clearButton = newElement("button");
+clearButton.textContent = "Clear";
+clearButton.addEventListener("click", () => {
+  clearInput();
+  inputWordsArray = [];
+  renderInputWords();
+});
 
 function popByVal(list, value) {
   var index = list.indexOf(value);
@@ -314,6 +326,7 @@ function toggleVisibleById(elementId) {
 
 
 function copyToClipboard() {
+  inputField.value = inputField.value.replace(cursorChar, "");
   inputField.select();
   try {
     document.execCommand('copy');
@@ -325,12 +338,6 @@ function copyToClipboard() {
   }
 }
 
-const copyButton = newElement("button");
-copyButton.textContent = "Copy to Clipboard";
-copyButton.addEventListener("click", () => {
-  copyToClipboard();
-});
-
-keyTest = document.createElement("h4");
-document.body.append(keyTest);
+keyTest = newElement("h4", {id: "key-test"});
 keyTest.textContent = "Key Test";
+toggleVisibleById("key-test");
