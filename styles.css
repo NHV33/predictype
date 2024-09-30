@@ -26,7 +26,9 @@ body {
 }
 
 textarea {
-  min-height: 7em;
+  font-size: 14px;
+  min-height: 11em;
+  line-height: 1.5;
 }
 
 .selected-choice {
