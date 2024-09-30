@@ -18,7 +18,7 @@ const inputField = newElement("textarea", {style: "min-width: 90vw; margin-botto
 // document.body.append(inputField);
 // inputField.textContent = "_";
 
-const preventDefKeys = ["F1", "F2", "F4"];
+const preventDefKeys = ["F1", "F2", "F4", "ArrowUp", "ArrowDown"];
 
 document.addEventListener("keydown", (event) => {
   console.log("event.key: ", event.key);
@@ -55,7 +55,7 @@ inputInterceptor = document.createElement("input");
 document.body.append(inputInterceptor);
 inputInterceptor.textContent = "Input Test";
 
-inputInterceptor.focus();
+inputInterceptor.select();
 
 function popByVal(list, value) {
   var index = list.indexOf(value);
@@ -138,6 +138,7 @@ function selectChoice(operation) {
   });
   selectedChoice.className = "selected-choice";
   selectedWord = selectedChoice.textContent;
+  inputInterceptor.focus();
 }
 
 inputInterceptor.addEventListener("input", (event) => {
@@ -246,6 +247,7 @@ function renderInputWords() {
   inputField.value += `${inputBuffer}`;
   // console.log("inputWordsArray: ", inputWordsArray);
   inputField.scrollTop = inputField.scrollHeight;
+  inputInterceptor.focus();
 }
 
 const cursorChar = "▏";
