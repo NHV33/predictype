@@ -318,6 +318,7 @@ function copyToClipboard() {
   try {
     document.execCommand('copy');
     keyTest.textContent = 'Copied text!';
+    inputInterceptor.focus();
   } catch (err) {
     keyTest.textContent = 'Unable to copy text';
     console.error('Unable to copy text', err);
