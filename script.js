@@ -55,7 +55,7 @@ inputInterceptor = document.createElement("input");
 document.body.append(inputInterceptor);
 inputInterceptor.textContent = "Input Test";
 
-inputInterceptor.select();
+inputInterceptor.focus();
 
 function popByVal(list, value) {
   var index = list.indexOf(value);
