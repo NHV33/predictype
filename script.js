@@ -138,7 +138,6 @@ function selectChoice(operation) {
   });
   selectedChoice.className = "selected-choice";
   selectedWord = selectedChoice.textContent;
-  inputInterceptor.focus();
 }
 
 inputInterceptor.addEventListener("input", (event) => {
@@ -247,7 +246,6 @@ function renderInputWords() {
   inputField.value += `${inputBuffer}`;
   // console.log("inputWordsArray: ", inputWordsArray);
   inputField.scrollTop = inputField.scrollHeight;
-  inputInterceptor.focus();
 }
 
 const cursorChar = "▏";
