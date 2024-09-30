@@ -244,7 +244,8 @@ function renderInputWords() {
   });
   // inputField.value += ` ${placeholderize(inputBuffer)}`;
   inputField.value += `${inputBuffer}`;
-  console.log("inputWordsArray: ", inputWordsArray);
+  // console.log("inputWordsArray: ", inputWordsArray);
+  inputField.scrollTop = inputField.scrollHeight;
 }
 
 const cursorChar = "▏";
