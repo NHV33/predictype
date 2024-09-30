@@ -167,9 +167,11 @@ function handleInput(inputChar) {
 const placeholderize = (text, placeholderChar = "_") => placeholderChar.repeat(text.length);
 
 function showPunctuationOptions() {
+  // TODO: "paginate" symbol list with repeated keypresses
+  // store an index of the current page, then reset upon input confirmation
   const punctuationAndSymbols = [
-    ".", "?", "!", ",", ";", ":", "'", "\"", "/", "\\", "&", "@", "#", "$", "%", "^", "*",
-    "(", ")", "[", "]", "{", "}"
+    ".", "?", "!", ",", ";", ":", "'", "\"", "/", "\\", "&", "@", "#", "$",
+    "%", "^", "*", "(", ")", "[", "]", "{", "}"
   ];
   populateChoiceBox(punctuationAndSymbols);
 }
@@ -178,7 +180,7 @@ function performBackspace() {
   if (inputBuffer.length > 0) {
     inputBuffer = inputBuffer.slice(0, inputBuffer.length - 1);
     lookupWords();
-  } else if (inputBuffer.length < 1 && inputWordsArray.length > 1) {
+  } else if (inputBuffer.length < 1 && inputWordsArray.length > 0) {
     inputWordsArray = inputWordsArray.slice(0, inputWordsArray.length - 1);
   }
   renderInputWords();
@@ -186,9 +188,19 @@ function performBackspace() {
 
 function modifyPrevWord(modify) {
   if (inputWordsArray.length < 1) { return }
-  const finalWord = inputWordsArray[inputWordsArray.length - 1];
-  inputWordsArray[inputWordsArray.length - 1] = modify(finalWord);
+  const finalIndex = indexOfFinalWord();
+  const finalWord = inputWordsArray[finalIndex];
+  inputWordsArray[finalIndex] = modify(finalWord);
   renderInputWords();
+}
+
+function indexOfFinalWord() {
+  for (let i = inputWordsArray.length -1; i >= 0; i--) {
+    const word = inputWordsArray[i];
+    if (!["", " "].includes(word)) {
+      return i
+    }
+  }
 }
 
 function toggleCase(text) {
@@ -205,17 +217,24 @@ function toggleCase(text) {
   }
 }
 
-const prevWord = () => inputWordsArray[inputWordsArray.length - 1];
+const prevWord = () => inputWordsArray.length > 0 ? inputWordsArray[inputWordsArray.length - 1] : "";
 
 let inputWordsArray = []
 
 function confirmWord(word) {
-  // TODO: make prefix rules into a function
-  const prefix = word.length > 1 && inputWordsArray.length > 1 ? " " : "";
-  inputWordsArray.push(prefix);
+  word = word === "" ? " " : word;
   inputWordsArray.push(word);
+  addSpace(word);
   renderInputWords();
   clearInput();
+}
+
+function addSpace() {
+  // const prefix = word.length > 1 && inputWordsArray.length > 1 ? " " : "";
+  const prev = prevWord();
+  if (prev.length > 1 || ["i", "a"].includes(prev.toLowerCase())) {
+    inputWordsArray.push(" ");
+  }
 }
 
 function renderInputWords() {
@@ -224,17 +243,23 @@ function renderInputWords() {
     inputField.value += word;
   });
   // inputField.value += ` ${placeholderize(inputBuffer)}`;
-  inputField.value += ` ${inputBuffer}`;
+  inputField.value += `${inputBuffer}`;
+  console.log("inputWordsArray: ", inputWordsArray);
 }
-// function confirmWord(word) {
-//   prevWord = word;
-//   // TODO: make prefix rules into a function
-//   const prefix = word.length > 1 && inputField.value.length > 1 ? " " : "";
-//   inputField.value += prefix;
-//   insertionIndex = inputField.value.length;
-//   inputField.value += word;
-//   clearInput();
-// }
+
+const cursorChar = "▏";
+
+function blinkCursor() {
+  if (inputField.value.includes(cursorChar)) {
+    inputField.value = inputField.value.replace(cursorChar, "");
+  } else {
+    inputField.value += cursorChar;
+  }
+}
+
+setInterval(() => {
+  blinkCursor();
+}, 777);
 
 function clearInput() {
   selectedWord = "";
@@ -243,37 +268,16 @@ function clearInput() {
   populateChoiceBox([]);
 }
 
-// async function fetchWords() {
-//   let promise = await fetch("words.json");
-//   let data = await promise.json();
-//   allWords = data;
-//   wordTest.textContent = data.join(", ");
-// }
-
-// function fetchWords() {
-//   fetch("num_words.json")
-//     .then(function (promise) {
-//       return promise.json();  // Convert the response to JSON
-//     })
-//     .then(function (data) {
-//       allWords = data;  // Assign data to `allWords`
-//       wordTest.textContent = String(data['97683']);  // Update the content of `wordTest`
-//     })
-//     .catch(function (error) {
-//       console.error('Error:', error);  // Handle any errors that occur
-//     });
-// }
-
 function fetchJSON(url, updateFunction) {
   fetch(url)
     .then(function (promise) {
-      return promise.json();  // Convert the response to JSON
+      return promise.json();
     })
     .then(function (data) {
       updateFunction(data);
     })
     .catch(function (error) {
-      console.error('Error:', error);  // Handle any errors that occur
+      console.error('Error:', error);
     });
 }
 
