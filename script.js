@@ -76,10 +76,12 @@ function popByVal(list, value) {
 //   return wordsInFreqList.concat(wordArray)
 // }
 
-function lookupWord(numString) {
-  console.log(numString)
-  const wordArray = allWords[numString];
-  console.log("wordArray: ", wordArray);
+function lookupWords() {
+  if (!inputBuffer) {
+    clearInput();
+    return
+  }
+  const wordArray = allWords[inputBuffer];
   if (wordArray) {
     populateChoiceBox(wordArray);
   }
@@ -149,7 +151,7 @@ let inputBuffer = "";
 function handleInput(inputChar) {
   if ("23456789".includes(inputChar)) {
     inputBuffer += inputChar;
-    lookupWord(inputBuffer);
+    lookupWords();
   } else if (inputChar === " ") {
     confirmWord(selectedWord);
   } else if (inputChar === "*") {
@@ -159,7 +161,10 @@ function handleInput(inputChar) {
   } else if (inputChar === "#") {
     showPunctuationOptions();
   }
+  renderInputWords();
 }
+
+const placeholderize = (text, placeholderChar = "_") => placeholderChar.repeat(text.length);
 
 function showPunctuationOptions() {
   const punctuationAndSymbols = [
@@ -170,16 +175,20 @@ function showPunctuationOptions() {
 }
 
 function performBackspace() {
-  prevWord = null;
-  inputField.value = inputField.value.slice(0, inputField.value.length - 1);
+  if (inputBuffer.length > 0) {
+    inputBuffer = inputBuffer.slice(0, inputBuffer.length - 1);
+    lookupWords();
+  } else if (inputBuffer.length < 1 && inputWordsArray.length > 1) {
+    inputWordsArray = inputWordsArray.slice(0, inputWordsArray.length - 1);
+  }
+  renderInputWords();
 }
 
 function modifyPrevWord(modify) {
-  if (!prevWord) { return }
-  inputField.value = inputField.value.slice(0, insertionIndex)
-  const updatedWord = modify(prevWord);
-  inputField.value += updatedWord;
-  prevWord = updatedWord;
+  if (inputWordsArray.length < 1) { return }
+  const finalWord = inputWordsArray[inputWordsArray.length - 1];
+  inputWordsArray[inputWordsArray.length - 1] = modify(finalWord);
+  renderInputWords();
 }
 
 function toggleCase(text) {
@@ -196,18 +205,36 @@ function toggleCase(text) {
   }
 }
 
-let insertionIndex = 0;
-let prevWord = "";
+const prevWord = () => inputWordsArray[inputWordsArray.length - 1];
+
+let inputWordsArray = []
 
 function confirmWord(word) {
-  prevWord = word;
   // TODO: make prefix rules into a function
-  const prefix = word.length > 1 && inputField.value.length > 1 ? " " : "";
-  inputField.value += prefix;
-  insertionIndex = inputField.value.length;
-  inputField.value += word;
+  const prefix = word.length > 1 && inputWordsArray.length > 1 ? " " : "";
+  inputWordsArray.push(prefix);
+  inputWordsArray.push(word);
+  renderInputWords();
   clearInput();
 }
+
+function renderInputWords() {
+  inputField.value = "";
+  inputWordsArray.forEach(word => {
+    inputField.value += word;
+  });
+  // inputField.value += ` ${placeholderize(inputBuffer)}`;
+  inputField.value += ` ${inputBuffer}`;
+}
+// function confirmWord(word) {
+//   prevWord = word;
+//   // TODO: make prefix rules into a function
+//   const prefix = word.length > 1 && inputField.value.length > 1 ? " " : "";
+//   inputField.value += prefix;
+//   insertionIndex = inputField.value.length;
+//   inputField.value += word;
+//   clearInput();
+// }
 
 function clearInput() {
   selectedWord = "";
