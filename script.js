@@ -112,7 +112,7 @@ function offsetIndex(list, current, offset) {
 }
 
 function selectChoice(operation) {
-  if (!wordChoiceBox.hasChildNodes) { return }
+  if (wordChoiceBox.children.length < 1) { return }
   console.log(wordChoiceBox.childNodes);
   switch (operation) {
     case "start":
@@ -224,7 +224,7 @@ let inputWordsArray = []
 function confirmWord(word) {
   word = word === "" ? " " : word;
   inputWordsArray.push(word);
-  addSpace(word);
+  // addSpace(word);
   renderInputWords();
   clearInput();
 }
